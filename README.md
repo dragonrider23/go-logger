@@ -15,7 +15,7 @@ import logger "github.com/dragonrider23/go-logger"
 appLogger := logger.New("app")
 appLogger.Info("Application started")
 appLogger.Warning("User not found")
-appLogger.Fatal("Unhandled error occured")
+appLogger.Fatal("Unhandled error occured") // Calls os.Exit(1)
 ```
 
 To specify your own error level, use the Error function:
