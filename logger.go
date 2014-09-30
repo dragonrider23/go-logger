@@ -28,15 +28,15 @@ type logger struct {
 	stdout                  bool
 }
 
-// Loggers is the collection of all logger types used.
+// loggers is the collection of all logger types used.
 // A logger can be called by their names instead of
 // passing around a *logger.
-var Loggers map[string]*logger
+var loggers map[string]*logger
 
 // New returns a pointer to a new logger struct named n.
 func New(n string) *logger {
-	if Loggers == nil {
-		Loggers = make(map[string]*logger)
+	if loggers == nil {
+		loggers = make(map[string]*logger)
 	}
 	newLogger := logger{
 		name:     n,
@@ -44,8 +44,13 @@ func New(n string) *logger {
 		location: "logs/",
 		tlayout:  "2006-01-02 15:04:05 MST",
 	}
-	Loggers[n] = &newLogger
+	loggers[n] = &newLogger
 	return &newLogger
+}
+
+// Get retrives the logger with name n
+func Get(n string) *logger {
+	return loggers[n]
 }
 
 // NoStdout disables the logger from going to stdout
