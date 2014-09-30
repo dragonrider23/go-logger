@@ -54,23 +54,28 @@ func Get(n string) *logger {
 }
 
 // NoStdout disables the logger from going to stdout
-func (l *logger) NoStdout() {
+func (l *logger) NoStdout() *logger {
 	l.stdout = false
-	return
+	return l
 }
 
 // Location sets the filepath for the log files
-func (l *logger) Location(p string) {
+func (l *logger) Location(p string) *logger {
 	if p[len(p)-1] != '/' {
 		p += "/"
 	}
 	l.location = p
-	return
+	return l
 }
 
 // TimeCode sets the time layout used in the logs
-func (l *logger) TimeCode(t string) {
+func (l *logger) TimeCode(t string) *logger {
 	l.tlayout = t
+	return l
+}
+
+func (l *logger) Close() {
+	delete(loggers, l.name)
 	return
 }
 

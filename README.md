@@ -32,17 +32,24 @@ logger.Get("app").Info("Error message")
 ```
 
 Each logger is unique by name so you can specify which loggers can print to stdout and even
-where each logger saves its log files:
+where each logger saves its log files as well as the timestampe format:
 
 ```Go
 appLogger.Location("path/to/log/files") // Changes log file location
 appLogger.NoStdout() // Disables stdout printing for the logger
+appLogger.TimeCode("2006-01-02 15:04:05 MST") // Changes timestamp format
 ```
 
-You can even change the timestamp format:
+You can even chain multiple configuration functions together:
 
 ```Go
-appLogger.TimeCode("2006-01-02 15:04:05 MST")
+logger.New("request").Location("reqlogs").NoStdout()
+```
+
+Lastly, if you want to get rid of the logger (using the Get() syntax):
+
+```Go
+logger.Get("app").Close()
 ```
 
 Available Colors for Logs
