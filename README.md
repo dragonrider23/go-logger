@@ -31,12 +31,14 @@ logger.New("app")
 logger.Get("app").Info("Error message")
 ```
 
-Each logger is unique by name so you can specify which loggers can print to stdout and even
-where each logger saves its log files as well as the timestampe format:
+Each logger is unique by name so you can specify which loggers can print to stdout,
+where each logger saves its log files, if the logger even writes to a file,
+ as well as the timestampe format:
 
 ```Go
 appLogger.Location("path/to/log/files") // Changes log file location
 appLogger.NoStdout() // Disables stdout printing for the logger
+appLogger.NoFile() // Disables logger from writting to a file
 appLogger.TimeCode("2006-01-02 15:04:05 MST") // Changes timestamp format
 ```
 
@@ -52,12 +54,21 @@ Lastly, if you want to get rid of the logger (using the Get() syntax):
 logger.Get("app").Close()
 ```
 
+Logger also supports timers. Each logger can only have one timer:
+
+```Go
+logger.Get("app").StartTimer() // Starts timer for logger "app"
+logger.Get("app").StopTimer("Action took {time} to complete") // Stops timer and logs message,
+{time} is replaced by the elapsed time
+```
+
 Available Colors for Logs
 -------------------------
 
 * Reset
 * Red
 * Blue
+* Cyan
 * Magenta
 * White
 * Grey
