@@ -39,15 +39,15 @@ func New(n string) *logger {
 	if loggers == nil {
 		loggers = make(map[string]*logger)
 	}
-	newLogger := logger{
+	newLogger := &logger{
 		name:     n,
 		stdout:   true,
 		file:     true,
 		location: "logs/",
 		tlayout:  "2006-01-02 15:04:05 MST",
 	}
-	loggers[n] = &newLogger
-	return &newLogger
+	loggers[n] = newLogger
+	return newLogger
 }
 
 // Get retrives the logger with name n
