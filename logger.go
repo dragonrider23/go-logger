@@ -88,32 +88,38 @@ func (l *logger) Close() {
 	return
 }
 
-// Wrapper for Error("Info", ...). Shows blue in stdout.
+// Wrapper for Log("Info", ...). Shows blue in stdout.
 func (l *logger) Info(format string, v ...interface{}) {
-	l.Error("Info", Cyan, format, v...)
+	l.Log("Info", Cyan, format, v...)
 	return
 }
 
-// Wrapper for Error("Warning", ...). Shows magenta in stdout.
+// Wrapper for Log("Warning", ...). Shows magenta in stdout.
 func (l *logger) Warning(format string, v ...interface{}) {
-	l.Error("Warning", Magenta, format, v...)
+	l.Log("Warning", Magenta, format, v...)
 	return
 }
 
-// Wrapper for Error("Fatal", ...). Shows red in stdout.
+// Wrapper for Log("Error", ...). Shows red in stdout.
+func (l *logger) Error(format string, v ...interface{}) {
+	l.Log("Error", Red, format, v...)
+	return
+}
+
+// Wrapper for Log("Fatal", ...). Shows red in stdout.
 // After showing and saving the log string, Fatal will
 // exit the application with os.Exit(1).
 func (l *logger) Fatal(format string, v ...interface{}) {
-	l.Error("Fatal", Red, format, v...)
+	l.Log("Fatal", Red, format, v...)
 	os.Exit(1)
 	return
 }
 
-// Error is the core function that will write a log text to file and stdout.
+// Log is the core function that will write a log text to file and stdout.
 // The log will be of eType type (used for the filename of the log). In
 // stdout it will be colored color (see const list). The text will use format
 // to Printf v interfaces.
-func (l *logger) Error(eType, color, format string, v ...interface{}) {
+func (l *logger) Log(eType, color, format string, v ...interface{}) {
 	if color == "" {
 		color = White
 	}

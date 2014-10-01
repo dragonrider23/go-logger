@@ -15,13 +15,14 @@ import logger "github.com/dragonrider23/go-logger"
 appLogger := logger.New("app")
 appLogger.Info("Application started")
 appLogger.Warning("User not found")
+appLogger.Error("I can't handle this")
 appLogger.Fatal("Unhandled error occured") // Calls os.Exit(1)
 ```
 
-To specify your own error level, use the Error function:
+To specify your own error level, use the Log function:
 
 ```Go
-appLogger.Error("Notice", blue, "%s", "This is a notice", ...interface{})
+appLogger.Log("Notice", blue, "%s", "This is a notice", ...interface{})
 ```
 
 You can also use the Get() func to call a specific logger:
