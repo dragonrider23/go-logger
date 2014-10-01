@@ -25,11 +25,13 @@ To specify your own error level, use the Log function:
 appLogger.Log("Notice", blue, "%s", "This is a notice", ...interface{})
 ```
 
-You can also use the Get() func to call a specific logger:
+You can also use the Get() func to call a specific logger. If Get() can't
+find the logger by name, it will create a new logger:
 
 ```Go
 logger.New("app")
-logger.Get("app").Info("Error message")
+logger.Get("app").Info("Error message") // Uses existing logger
+logger.Get("module").Error("Error") // Creates new logger names 'module' and issues error
 ```
 
 Each logger is unique by name so you can specify which loggers can print to stdout,

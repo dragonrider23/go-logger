@@ -38,9 +38,15 @@ var loggers map[string]*logger
 
 // New returns a pointer to a new logger struct named n.
 func New(n string) *logger {
+	// Initialize loggers
 	if loggers == nil {
 		loggers = make(map[string]*logger)
 	}
+	// If logger with n name is already created, return it
+	if loggers[n] != nil {
+		return loggers[n]
+	}
+	// Create new logger
 	newLogger := &logger{
 		name:     n,
 		stdout:   true,
@@ -48,13 +54,19 @@ func New(n string) *logger {
 		location: "logs/",
 		tlayout:  "2006-01-02 15:04:05 MST",
 	}
+	// Add to loggers
 	loggers[n] = newLogger
 	return newLogger
 }
 
 // Get retrives the logger with name n
 func Get(n string) *logger {
-	return loggers[n]
+	log := loggers[n]
+	// If logger doesn't exist, create it
+	if loggers[n] == nil {
+		log = New(n)
+	}
+	return log
 }
 
 // Set verbosity for stdout
