@@ -16,6 +16,7 @@ const (
 	Red     = "\033[31m"
 	Blue    = "\033[34m"
 	Magenta = "\033[35m"
+	Cyan    = "\033[36m"
 	White   = "\033[37m"
 	Grey    = "\x1B[90m"
 )
@@ -25,7 +26,8 @@ const (
 // and if it's shown in stdout.
 type logger struct {
 	name, location, tlayout string
-	stdout                  bool
+	stdout, file            bool
+	t                       timer
 }
 
 // loggers is the collection of all logger types used.
@@ -59,6 +61,12 @@ func (l *logger) NoStdout() *logger {
 	return l
 }
 
+// NoFile disables the logger from writting to a log file
+func (l *logger) NoFile() *logger {
+	l.file = false
+	return l
+}
+
 // Location sets the filepath for the log files
 func (l *logger) Location(p string) *logger {
 	if p[len(p)-1] != '/' {
@@ -74,6 +82,7 @@ func (l *logger) TimeCode(t string) *logger {
 	return l
 }
 
+// Remove logger l from the loggers map
 func (l *logger) Close() {
 	delete(loggers, l.name)
 	return
@@ -81,7 +90,7 @@ func (l *logger) Close() {
 
 // Wrapper for Error("Info", ...). Shows blue in stdout.
 func (l *logger) Info(format string, v ...interface{}) {
-	l.Error("Info", Blue, format, v...)
+	l.Error("Info", Cyan, format, v...)
 	return
 }
 
@@ -126,6 +135,9 @@ func (l *logger) writeToStdout(e, s, c string) {
 
 // Write log text specific path with filename l.name and path l.location
 func (l *logger) writeToFile(e, s string) (n int, err error) {
+	if !l.file {
+		return 0, fmt.Errorf("%s", "Write to file is disabled for this logger")
+	}
 	if err = checkPath(l.location); err != nil {
 		return 0, err
 	}
