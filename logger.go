@@ -44,6 +44,7 @@ func New(n string) *logger {
 	newLogger := logger{
 		name:     n,
 		stdout:   true,
+		file:     true,
 		location: "logs/",
 		tlayout:  "2006-01-02 15:04:05 MST",
 	}
