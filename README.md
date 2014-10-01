@@ -36,7 +36,7 @@ where each logger saves its log files, if the logger even writes to a file,
  as well as the timestampe format:
 
 ```Go
-appLogger.Location("path/to/log/files") // Changes log file location
+appLogger.Path("path/to/log/files") // Changes log file path
 appLogger.NoStdout() // Disables stdout printing for the logger
 appLogger.NoFile() // Disables logger from writting to a file
 appLogger.TimeCode("2006-01-02 15:04:05 MST") // Changes timestamp format
@@ -45,7 +45,7 @@ appLogger.TimeCode("2006-01-02 15:04:05 MST") // Changes timestamp format
 You can even chain multiple configuration functions together:
 
 ```Go
-logger.New("request").Location("reqlogs").NoStdout()
+logger.New("request").Path("reqlogs").NoStdout()
 ```
 
 Lastly, if you want to get rid of the logger (using the Get() syntax):
