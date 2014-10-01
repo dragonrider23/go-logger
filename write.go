@@ -17,6 +17,24 @@ func (l *logger) writeToStdout(e, s, c string) {
 		return
 	}
 
+	// Verbosity
+	log := false
+	if verbosity == 3 {
+		log = true
+	}
+	if verbosity == 2 && e != "Info" {
+		log = true
+	}
+	if verbosity == 1 && (e != "Info" && e != "Warning") {
+		log = true
+	}
+	if verbosity == 0 && e == "Fatal" {
+		log = true
+	}
+	if !log {
+		return
+	}
+
 	now := time.Now().Format(l.tlayout)
 	fmt.Printf("%s%s: %s%s: %s%s\n", Grey, now, c, strings.ToUpper(e), Reset, s)
 	return

@@ -65,6 +65,17 @@ logger.Get("app").StopTimer("Action took {time} to complete") // Stops timer and
 elapsed := logger.Get("app").StopTimer("") // Doesn't write an Info log if string is empty
 ```
 
+You can set the verbosity level of stdout with Verbose(). This can be set in multiple parts of
+you application so if you want one part to be more verbose than another you can elevate the
+verbosity level at the beginning of the action and reset it down at the end:
+
+```Go
+logger.Verbose(3) // All log levels (Info)
+logger.Verbose(2) // Warning, Error, Fatal (Default)
+logger.Verbose(1) // Error, Fatal
+logger.Verbose(0) // Fatal
+```
+
 Available Colors for Logs
 -------------------------
 

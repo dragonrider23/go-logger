@@ -20,6 +20,8 @@ const (
 	Grey    = "\x1B[90m"
 )
 
+var verbosity int = 2
+
 // Type logger is the struct returned and used for logging
 // The user can set its name, logfile location, time layout,
 // and if it's shown in stdout.
@@ -53,6 +55,17 @@ func New(n string) *logger {
 // Get retrives the logger with name n
 func Get(n string) *logger {
 	return loggers[n]
+}
+
+// Set verbosity for stdout
+func Verbose(v int) {
+	if v < 0 {
+		v = 0
+	} else if v > 3 {
+		v = 3
+	}
+	verbosity = v
+	return
 }
 
 // NoStdout disables the logger from going to stdout
