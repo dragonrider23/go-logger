@@ -31,7 +31,7 @@ find the logger by name, it will create a new logger:
 ```Go
 logger.New("app")
 logger.Get("app").Info("Error message") // Uses existing logger
-logger.Get("module").Error("Error") // Creates new logger names 'module' and issues error
+logger.Get("module").Error("Error") // Creates new logger named 'module' and issues error
 ```
 
 Each logger is unique by name so you can specify which loggers can print to stdout,
@@ -91,6 +91,16 @@ Available Colors for Logs
 
 Release Notes
 -------------
+
+v2.0.0
+
+- Timers on logger
+- Error() is a log level
+- Log() replaces Error() as custom log level
+- New() will return an existing logger if the name is created
+- Get() will create a logger if the name doesn't exist
+- Bump major version because of Error() Log() change
+- Set verbosity for stdout
 
 v1.0.0
 
