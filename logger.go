@@ -27,7 +27,7 @@ var verbosity int = 2
 // and if it's shown in stdout.
 type logger struct {
 	name, location, tlayout string
-	stdout, file            bool
+	stdout, file, raw       bool
 	t                       timer
 }
 
@@ -51,6 +51,7 @@ func New(n string) *logger {
 		name:     n,
 		stdout:   true,
 		file:     true,
+		raw:      false,
 		location: "logs/",
 		tlayout:  "2006-01-02 15:04:05 MST",
 	}
@@ -89,6 +90,12 @@ func (l *logger) NoStdout() *logger {
 // NoFile disables the logger from writting to a log file
 func (l *logger) NoFile() *logger {
 	l.file = false
+	return l
+}
+
+// Raw tells the logger writer to not pre-include the date
+func (l *logger) Raw() *logger {
+	l.raw = true
 	return l
 }
 

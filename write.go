@@ -49,8 +49,13 @@ func (l *logger) writeToFile(e, s string) (n int, err error) {
 		return 0, err
 	}
 
+	t := ""
+	if !l.raw {
+		t = time.Now().Format(l.tlayout) + ": "
+	}
+
 	fileName := l.location + strings.ToLower(e) + ".log"
-	errorStr := time.Now().Format(l.tlayout) + ": " + s + "\n"
+	errorStr := t + s + "\n"
 
 	saveFile, err1 := os.OpenFile(fileName, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0660)
 	if err1 != nil {
