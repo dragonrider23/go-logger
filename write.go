@@ -40,7 +40,7 @@ func (l *logger) writeToStdout(e, s, c string) {
 	return
 }
 
-// Write log text specific path with filename l.name and path l.location
+// Write log text specific path with filename e[.log] and path l.location
 func (l *logger) writeToFile(e, s string) (n int, err error) {
 	if !l.file {
 		return 0, fmt.Errorf("%s", "Write to file is disabled for this logger")

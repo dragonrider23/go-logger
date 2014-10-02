@@ -7,6 +7,8 @@ to a file and displayed in standard output. Loggers can also have a timer.
 Usage
 -----
 
+Logs are by default written to folder "./logs" relative to where the binary was executed.
+
 Basic usage:
 
 ```Go
