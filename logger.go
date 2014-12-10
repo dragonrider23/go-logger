@@ -155,7 +155,6 @@ func (l *logger) Log(eType, color, format string, v ...interface{}) {
 	if color == "" {
 		color = White
 	}
-	l.writeToStdout(eType, fmt.Sprintf(format, v...), color)
-	l.writeToFile(eType, fmt.Sprintf(format, v...))
+	l.writeAll(eType, fmt.Sprintf(format, v...), color)
 	return
 }
