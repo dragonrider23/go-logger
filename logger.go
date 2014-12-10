@@ -23,11 +23,11 @@ const (
 var verbosity int = 2
 
 // Type logger is the struct returned and used for logging
-// The user can set its name, logfile location, time layout,
-// and if it's shown in stdout.
+// The user can set its properties using the associated functions.
 type logger struct {
 	name, location, tlayout string
 	stdout, file, raw       bool
+	verbosity               int
 	t                       timer
 }
 
@@ -48,12 +48,13 @@ func New(n string) *logger {
 	}
 	// Create new logger
 	newLogger := &logger{
-		name:     n,
-		stdout:   true,
-		file:     true,
-		raw:      false,
-		location: "logs/",
-		tlayout:  "2006-01-02 15:04:05 MST",
+		name:      n,
+		stdout:    true,
+		file:      true,
+		raw:       false,
+		verbosity: -1,
+		location:  "logs/",
+		tlayout:   "2006-01-02 15:04:05 MST",
 	}
 	// Add to loggers
 	loggers[n] = newLogger
@@ -70,7 +71,7 @@ func Get(n string) *logger {
 	return log
 }
 
-// Set verbosity for stdout
+// Set global verbosity for stdout
 func Verbose(v int) {
 	if v < 0 {
 		v = 0
@@ -79,6 +80,23 @@ func Verbose(v int) {
 	}
 	verbosity = v
 	return
+}
+
+// Gets current global verbosity
+func GetVerboseLevel() int {
+	return verbosity
+}
+
+// Set verbose level of indivindual logger
+// -1 means use the global verbosity
+func (l *logger) Verbose(v int) *logger {
+	if v < -1 {
+		v = -1
+	} else if v > 3 {
+		v = 3
+	}
+	l.verbosity = v
+	return l
 }
 
 // NoStdout disables the logger from going to stdout

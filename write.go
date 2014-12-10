@@ -24,18 +24,23 @@ func (l *logger) writeToStdout(e, s, c string) {
 		return
 	}
 
+	stdOutVerbosity := verbosity
+	if l.verbosity > -1 {
+		stdOutVerbosity = l.verbosity
+	}
+
 	// Verbosity
 	log := false
-	if verbosity == 3 {
+	if stdOutVerbosity == 3 {
 		log = true
 	}
-	if verbosity == 2 && e != "Info" {
+	if stdOutVerbosity == 2 && e != "Info" {
 		log = true
 	}
-	if verbosity == 1 && (e != "Info" && e != "Warning") {
+	if stdOutVerbosity == 1 && (e != "Info" && e != "Warning") {
 		log = true
 	}
-	if verbosity == 0 && e == "Fatal" {
+	if stdOutVerbosity == 0 && e == "Fatal" {
 		log = true
 	}
 	if !log {
