@@ -52,7 +52,7 @@ func New(n string) *logger {
 		stdout:    true,
 		file:      true,
 		raw:       false,
-		verbosity: -1,
+		verbosity: verbosity,
 		location:  "logs/",
 		tlayout:   "2006-01-02 15:04:05 MST",
 	}
@@ -73,12 +73,7 @@ func Get(n string) *logger {
 
 // Set global verbosity for stdout
 func Verbose(v int) {
-	if v < 0 {
-		v = 0
-	} else if v > 3 {
-		v = 3
-	}
-	verbosity = v
+	verbosity = checkVerboseLevel(v)
 	return
 }
 
@@ -88,15 +83,19 @@ func GetVerboseLevel() int {
 }
 
 // Set verbose level of indivindual logger
-// -1 means use the global verbosity
 func (l *logger) Verbose(v int) *logger {
-	if v < -1 {
-		v = -1
+	l.verbosity = checkVerboseLevel(v)
+	return l
+}
+
+// Validate verbosity level
+func checkVerboseLevel(v int) int {
+	if v < 0 {
+		v = 0
 	} else if v > 3 {
 		v = 3
 	}
-	l.verbosity = v
-	return l
+	return v
 }
 
 // NoStdout disables the logger from going to stdout
