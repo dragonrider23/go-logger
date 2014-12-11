@@ -2,6 +2,22 @@
 // Use of this source code is governed by the MIT
 // license that can be found in the LICENSE file.
 
+// The logger package allows for organized, simplified, custom
+// logging for any application. Logger makes creating logs easy.
+// Create multiple loggers for specialized purposes each with their
+// own specific settings such as verbosity, log file location, and
+// whether it's show on stdout, written to file, or only one of them.
+// Logger comes with 4 pre-made logging levels ready for use. There's
+// also a generic Log() function that allows for custom log types.
+//
+// Logger also has timers that can be attached to logs. This makes it
+// easy to track how long a function or request takes to run. Logger
+// also comes with a wrapper function to check for errors in an application.
+// Instead of having to write out the log to file code for every err if
+// statement, CheckError() will take the error, check if one exists and
+// then write it to the logger of choice. It will also return boolean
+// to tell the calling function if an error happened or not so any custom
+// actions can be performed if needed.
 package logger
 
 import (
@@ -9,7 +25,7 @@ import (
 	"os"
 )
 
-// Colors that can be used for Error()
+// Colors that can be used for Log().
 const (
 	Reset   = "\033[0m"
 	Red     = "\033[31m"
@@ -22,9 +38,9 @@ const (
 
 var verbosity int = 2
 
-// Type logger is the struct returned and used for logging
+// Type logger is the struct returned and used for logging.
 // The user can set its properties using the associated functions.
-type logger struct {
+type Logger struct {
 	name, location, tlayout string
 	stdout, file, raw       bool
 	verbosity               int
@@ -33,21 +49,21 @@ type logger struct {
 
 // loggers is the collection of all logger types used.
 // A logger can be called by their names instead of
-// passing around a *logger.
-var loggers map[string]*logger
+// passing around a *Logger.
+var loggers map[string]*Logger
 
 // New returns a pointer to a new logger struct named n.
-func New(n string) *logger {
+func New(n string) *Logger {
 	// Initialize loggers
 	if loggers == nil {
-		loggers = make(map[string]*logger)
+		loggers = make(map[string]*Logger)
 	}
 	// If logger with n name is already created, return it
 	if loggers[n] != nil {
 		return loggers[n]
 	}
 	// Create new logger
-	newLogger := &logger{
+	newLogger := &Logger{
 		name:      n,
 		stdout:    true,
 		file:      true,
@@ -61,8 +77,8 @@ func New(n string) *logger {
 	return newLogger
 }
 
-// Get retrives the logger with name n
-func Get(n string) *logger {
+// Get retrives the logger with name n.
+func Get(n string) *Logger {
 	log := loggers[n]
 	// If logger doesn't exist, create it
 	if loggers[n] == nil {
@@ -71,24 +87,24 @@ func Get(n string) *logger {
 	return log
 }
 
-// Set global verbosity for stdout
+// Set global verbosity for stdout.
 func Verbose(v int) {
 	verbosity = checkVerboseLevel(v)
 	return
 }
 
-// Gets current global verbosity
+// Gets current global verbosity.
 func GetVerboseLevel() int {
 	return verbosity
 }
 
-// Set verbose level of indivindual logger
-func (l *logger) Verbose(v int) *logger {
+// Set verbose level of logger.
+func (l *Logger) Verbose(v int) *Logger {
 	l.verbosity = checkVerboseLevel(v)
 	return l
 }
 
-// Validate verbosity level
+// Validate verbosity level.
 func checkVerboseLevel(v int) int {
 	if v < 0 {
 		v = 0
@@ -98,26 +114,27 @@ func checkVerboseLevel(v int) int {
 	return v
 }
 
-// NoStdout disables the logger from going to stdout
-func (l *logger) NoStdout() *logger {
+// NoStdout disables the logger from going to stdout.
+func (l *Logger) NoStdout() *Logger {
 	l.stdout = false
 	return l
 }
 
-// NoFile disables the logger from writting to a log file
-func (l *logger) NoFile() *logger {
+// NoFile disables the logger from writting to a log file.
+func (l *Logger) NoFile() *Logger {
 	l.file = false
 	return l
 }
 
-// Raw tells the logger writer to not pre-include the date
-func (l *logger) Raw() *logger {
+// Raw tells the logger writer to not pre-include the date.
+// Allows for completely custom log text.
+func (l *Logger) Raw() *Logger {
 	l.raw = true
 	return l
 }
 
-// Path sets the filepath for the log files
-func (l *logger) Path(p string) *logger {
+// Path sets the filepath for the log files.
+func (l *Logger) Path(p string) *Logger {
 	if p[len(p)-1] != '/' {
 		p += "/"
 	}
@@ -125,32 +142,32 @@ func (l *logger) Path(p string) *logger {
 	return l
 }
 
-// TimeCode sets the time layout used in the logs
-func (l *logger) TimeCode(t string) *logger {
+// TimeCode sets the time layout used in the logs.
+func (l *Logger) TimeCode(t string) *Logger {
 	l.tlayout = t
 	return l
 }
 
-// Remove logger l from the loggers map
-func (l *logger) Close() {
+// Remove logger l from the loggers map.
+func (l *Logger) Close() {
 	delete(loggers, l.name)
 	return
 }
 
 // Wrapper for Log("Info", ...). Shows blue in stdout.
-func (l *logger) Info(format string, v ...interface{}) {
+func (l *Logger) Info(format string, v ...interface{}) {
 	l.Log("Info", Cyan, format, v...)
 	return
 }
 
 // Wrapper for Log("Warning", ...). Shows magenta in stdout.
-func (l *logger) Warning(format string, v ...interface{}) {
+func (l *Logger) Warning(format string, v ...interface{}) {
 	l.Log("Warning", Magenta, format, v...)
 	return
 }
 
 // Wrapper for Log("Error", ...). Shows red in stdout.
-func (l *logger) Error(format string, v ...interface{}) {
+func (l *Logger) Error(format string, v ...interface{}) {
 	l.Log("Error", Red, format, v...)
 	return
 }
@@ -158,7 +175,7 @@ func (l *logger) Error(format string, v ...interface{}) {
 // Wrapper for Log("Fatal", ...). Shows red in stdout.
 // After showing and saving the log string, Fatal will
 // exit the application with os.Exit(1).
-func (l *logger) Fatal(format string, v ...interface{}) {
+func (l *Logger) Fatal(format string, v ...interface{}) {
 	l.Log("Fatal", Red, format, v...)
 	os.Exit(1)
 	return
@@ -168,7 +185,7 @@ func (l *logger) Fatal(format string, v ...interface{}) {
 // The log will be of eType type (used for the filename of the log). In
 // stdout it will be colored color (see const list). The text will use format
 // to Printf v interfaces.
-func (l *logger) Log(eType, color, format string, v ...interface{}) {
+func (l *Logger) Log(eType, color, format string, v ...interface{}) {
 	if color == "" {
 		color = White
 	}

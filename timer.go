@@ -17,7 +17,7 @@ type timer struct {
 }
 
 // StartTimer associates a timer with logger l
-func (l *logger) StartTimer() {
+func (l *Logger) StartTimer() {
 	l.t = timer{
 		start:   time.Now(),
 		running: true,
@@ -29,7 +29,7 @@ func (l *logger) StartTimer() {
 // l's timer started and issues an Info level log.
 // The string "{time}" will be replaced with the
 // elapsed time.
-func (l *logger) StopTimer(s string) string {
+func (l *Logger) StopTimer(s string) string {
 	if !l.t.running {
 		return ""
 	}

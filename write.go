@@ -12,30 +12,30 @@ import (
 )
 
 // Wrapper function to call both writeToStdout and writeToFile
-func (l *logger) writeAll(e, s, c string) (n int, err error) {
+func (l *Logger) writeAll(e, s, c string) (n int, err error) {
 	l.writeToStdout(e, s, c)
 	n, err = l.writeToFile(e, s)
 	return
 }
 
 // Write log text to stdout
-func (l *logger) writeToStdout(e, s, c string) {
+func (l *Logger) writeToStdout(e, s, c string) {
 	if !l.stdout {
 		return
 	}
 
 	// Verbosity
 	log := false
-	if l.verbosity == 3 {
+	if l.verbosity == 3 { // All levels including custom
 		log = true
 	}
-	if l.verbosity == 2 && e != "Info" {
+	if l.verbosity == 2 && e != "Info" { // Warning, Error, Fatal
 		log = true
 	}
-	if l.verbosity == 1 && (e != "Info" && e != "Warning") {
+	if l.verbosity == 1 && (e != "Info" && e != "Warning") { // Error, Fatal
 		log = true
 	}
-	if l.verbosity == 0 && e == "Fatal" {
+	if l.verbosity == 0 && e == "Fatal" { // Fatal
 		log = true
 	}
 	if !log {
@@ -48,7 +48,7 @@ func (l *logger) writeToStdout(e, s, c string) {
 }
 
 // Write log text specific path with filename [l.name]-[e].log and path l.location
-func (l *logger) writeToFile(e, s string) (n int, err error) {
+func (l *Logger) writeToFile(e, s string) (n int, err error) {
 	if !l.file {
 		return 0, fmt.Errorf("%s", "Write to file is disabled for this logger")
 	}
