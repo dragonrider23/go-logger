@@ -5,6 +5,7 @@
 package logger
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -24,7 +25,7 @@ func (l *Logger) writeToStdout(e, s, c string) {
 		return
 	}
 
-	// Verbosity
+	// Check verbosity
 	log := false
 	if l.verbosity == 3 { // All levels including custom
 		log = true
@@ -47,38 +48,41 @@ func (l *Logger) writeToStdout(e, s, c string) {
 	return
 }
 
-// Write log text specific path with filename [l.name]-[e].log and path l.location
+// Write log text specific path with filename [l.name]-[e].log and path l.path
 func (l *Logger) writeToFile(e, s string) (n int, err error) {
 	if !l.file {
-		return 0, fmt.Errorf("%s", "Write to file is disabled for this logger")
+		return 0, errors.New("Write to file is disabled for this logger")
 	}
-	if err = checkPath(l.location); err != nil {
+	if err = checkPath(l.path); err != nil {
 		return 0, err
 	}
 
+	// Prepare time stamp
 	t := ""
 	if !l.raw {
 		t = time.Now().Format(l.tlayout) + ": "
 	}
 
+	// Prepare filename
 	var loggerName string
 	if l.name == "" {
 		loggerName = ""
 	} else {
 		loggerName = strings.ToLower(l.name) + "-"
 	}
-	fileName := l.location + loggerName + strings.ToLower(e) + ".log"
+	fileName := l.path + loggerName + strings.ToLower(e) + ".log"
 	errorStr := t + s + "\n"
 
-	saveFile, err := os.OpenFile(fileName, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0660)
+	// Open and write to logfile
+	saveFile, err := os.OpenFile(fileName, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
 	if err != nil {
-		fmt.Printf("%s", err)
+		fmt.Println(err.Error())
 	}
 	defer saveFile.Close()
 
 	n, err = saveFile.WriteString(errorStr)
 	if err != nil {
-		fmt.Printf("%s", err)
+		fmt.Println(err.Error())
 	}
 	return
 }
@@ -91,10 +95,10 @@ func checkPath(p string) error {
 	}
 
 	if os.IsNotExist(err) {
-		if err = os.Mkdir(p, 0775); err != nil {
-			return fmt.Errorf("%s", "ERROR: Logger - Couldn't create logs folder")
+		if err = os.Mkdir(p, 0755); err != nil {
+			return errors.New("ERROR: Logger - Couldn't create logs folder")
 		}
 		return nil
 	}
-	return fmt.Errorf("%s", "ERROR: Logger - Unknown file error")
+	return errors.New("ERROR: Logger - Unknown file error")
 }

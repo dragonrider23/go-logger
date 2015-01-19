@@ -63,6 +63,8 @@ where each logger saves its log files, if the logger even writes to a file,
 appLogger.Path("path/to/log/files") // Changes log file path
 appLogger.NoStdout() // Disables stdout printing for the logger
 appLogger.NoFile() // Disables logger from writting to a file
+appLogger.Stdout() // Enables stdout printing for the logger (enabled by default)
+appLogger.File() // Enables logger writting to a file (enabled by default)
 appLogger.TimeCode("2006-01-02 15:04:05 MST") // Changes timestamp format
 appLogger.Verbose(2) // Sets verbose level to 2 (Error and Fatal)
 ```
@@ -79,7 +81,7 @@ Lastly, if you want to get rid of the logger (using the Get() syntax):
 logger.Get("app").Close()
 ```
 
-Logger also supports timers. Each logger can only have one timer. StopTimer() will return 
+Logger also supports timers. Each logger can only have one timer. StopTimer() will return
 the elapsed time as a string:
 
 ```Go
@@ -112,6 +114,12 @@ Available Colors for Logs
 
 Release Notes
 -------------
+
+v2.2.0
+
+- Added StdOut() and File() which will reenable StdOut and file writing for logger
+- Added the Green and Yellow ANSI colors
+- Code cleanup
 
 v2.1.0
 

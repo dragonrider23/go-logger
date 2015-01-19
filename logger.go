@@ -29,6 +29,8 @@ import (
 const (
 	Reset   = "\033[0m"
 	Red     = "\033[31m"
+	Green   = "\033[32m"
+	Yellow  = "\033[33m"
 	Blue    = "\033[34m"
 	Magenta = "\033[35m"
 	Cyan    = "\033[36m"
@@ -38,13 +40,34 @@ const (
 
 var verbosity int = 2
 
+// Set global verbosity for stdout.
+func Verbose(v int) {
+	verbosity = checkVerboseLevel(v)
+	return
+}
+
+// Gets current global verbosity.
+func GetVerboseLevel() int {
+	return verbosity
+}
+
+// Validate verbosity level.
+func checkVerboseLevel(v int) int {
+	if v < 0 {
+		v = 0
+	} else if v > 3 {
+		v = 3
+	}
+	return v
+}
+
 // Type logger is the struct returned and used for logging.
 // The user can set its properties using the associated functions.
 type Logger struct {
-	name, location, tlayout string
-	stdout, file, raw       bool
-	verbosity               int
-	t                       timer
+	name, path, tlayout string
+	stdout, file, raw   bool
+	verbosity           int
+	t                   timer
 }
 
 // loggers is the collection of all logger types used.
@@ -69,7 +92,7 @@ func New(n string) *Logger {
 		file:      true,
 		raw:       false,
 		verbosity: verbosity,
-		location:  "logs/",
+		path:      "logs/",
 		tlayout:   "2006-01-02 15:04:05 MST",
 	}
 	// Add to loggers
@@ -87,31 +110,10 @@ func Get(n string) *Logger {
 	return log
 }
 
-// Set global verbosity for stdout.
-func Verbose(v int) {
-	verbosity = checkVerboseLevel(v)
-	return
-}
-
-// Gets current global verbosity.
-func GetVerboseLevel() int {
-	return verbosity
-}
-
 // Set verbose level of logger.
 func (l *Logger) Verbose(v int) *Logger {
 	l.verbosity = checkVerboseLevel(v)
 	return l
-}
-
-// Validate verbosity level.
-func checkVerboseLevel(v int) int {
-	if v < 0 {
-		v = 0
-	} else if v > 3 {
-		v = 3
-	}
-	return v
 }
 
 // NoStdout disables the logger from going to stdout.
@@ -120,9 +122,21 @@ func (l *Logger) NoStdout() *Logger {
 	return l
 }
 
-// NoFile disables the logger from writting to a log file.
+// Stdout enables the logger going to stdout.
+func (l *Logger) Stdout() *Logger {
+	l.stdout = true
+	return l
+}
+
+// NoFile disables the logger from writting to a file.
 func (l *Logger) NoFile() *Logger {
 	l.file = false
+	return l
+}
+
+// File enables the logger writting to a file.
+func (l *Logger) File() *Logger {
+	l.file = true
 	return l
 }
 
@@ -138,7 +152,7 @@ func (l *Logger) Path(p string) *Logger {
 	if p[len(p)-1] != '/' {
 		p += "/"
 	}
-	l.location = p
+	l.path = p
 	return l
 }
 
@@ -173,8 +187,7 @@ func (l *Logger) Error(format string, v ...interface{}) {
 }
 
 // Wrapper for Log("Fatal", ...). Shows red in stdout.
-// After showing and saving the log string, Fatal will
-// exit the application with os.Exit(1).
+// Exits application with os.Exit(1).
 func (l *Logger) Fatal(format string, v ...interface{}) {
 	l.Log("Fatal", Red, format, v...)
 	os.Exit(1)
