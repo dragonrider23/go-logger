@@ -106,9 +106,11 @@ Available Colors for Logs
 
 * Reset
 * Red
+* Green
+* Yellow
 * Blue
-* Cyan
 * Magenta
+* Cyan
 * White
 * Grey
 
