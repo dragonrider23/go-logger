@@ -2,7 +2,7 @@ package logger
 
 import "testing"
 
-var base = Logger{
+var base = &Logger{
 	name:      "testLog",
 	stdout:    true,
 	file:      true,
@@ -12,8 +12,8 @@ var base = Logger{
 	tlayout:   "2006-01-02 15:04:05 MST",
 }
 
-func TestNew(t *testing.T) {
-	testLog := *New("testLog")
+func TestNewGet(t *testing.T) {
+	testLog := New("testLog")
 
 	if !compareLoggers(base, testLog) {
 		t.Error("Expected ", base, " Got ", testLog)
@@ -21,26 +21,23 @@ func TestNew(t *testing.T) {
 	if len(loggers) != 1 {
 		t.Error("Expected 1 Got ", len(loggers))
 	}
-}
 
-func TestGet(t *testing.T) {
-	testLog := *Get("testLog")
-
-	if !compareLoggers(base, testLog) {
+	testLog2 := Get("testLog")
+	if !compareLoggers(base, testLog2) {
 		t.Error("Expected ", base, " Got ", testLog)
 	}
 }
 
 func TestGlobalVerbose(t *testing.T) {
-	Verbose(3)
+	Verbosity(2)
+	if GetVerboseLevel() != 2 {
+		t.Error("Expected 2 Got ", GetVerboseLevel())
+	}
+	Verbosity(5)
 	if GetVerboseLevel() != 3 {
 		t.Error("Expected 3 Got ", GetVerboseLevel())
 	}
-	Verbose(5)
-	if GetVerboseLevel() != 3 {
-		t.Error("Expected 3 Got ", GetVerboseLevel())
-	}
-	Verbose(-2)
+	Verbosity(-2)
 	if GetVerboseLevel() != 0 {
 		t.Error("Expected 0 Got ", GetVerboseLevel())
 	}
@@ -88,7 +85,7 @@ func TestLoggerPath(t *testing.T) {
 	}
 }
 
-func compareLoggers(a, b Logger) bool {
+func compareLoggers(a, b *Logger) bool {
 	if &a == &b {
 		return true
 	}

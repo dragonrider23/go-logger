@@ -17,9 +17,9 @@ func CheckError(e error, l *Logger) bool {
 	}
 
 	if l == nil {
-		l = Get("")
+		l = New("")
 	}
 
-	l.Error("%s", e.Error())
+	l.Error(e.Error())
 	return true
 }
