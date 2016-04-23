@@ -1,6 +1,18 @@
 Logging Package for Go
 ======================
 
+DEPRECATION NOTICE
+------------------
+
+Go-logger is now deprecated and while no longer be maintained.
+Please use [Verbose](https://github.com/dragonrider23/verbose) instead.
+It's the successor to this library. I wanted to improve on go-logger but
+felt the changes I wanted would have required a full rewrite which didn't seem
+right to do on the same repository.
+
+Intro
+-----
+
 Go-logger allows for organized, simplified, custom
 logging for any application. Go-logger makes creating logs easy.
 Create multiple loggers for different purposes each with their
